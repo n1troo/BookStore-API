@@ -34,6 +34,9 @@ namespace BookStore_API.Controllers
         /// </summary>
         /// <returns>List of authors</returns>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetAuthors()
         {
             try
@@ -47,11 +50,42 @@ namespace BookStore_API.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"{e.Message} and {e.InnerException.Message}");
-               
-                return StatusCode(500);
+                return InternalError($"{e.Message} and {e.InnerException.Message}");
             }
-            
+        }
+
+
+        /// <summary>
+        /// Get one authors by specyfic ID
+        /// </summary>
+        /// <returns>one of authors</returns>
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAuthor(int id)
+        {
+            try
+            {
+                _logger.LogInfo($"Get author by iD {id}");
+                var author = await _authorRepository.FindById(id);
+                if(author == null)
+                {
+                    _logger.LogWarn($"Author not found {id}");
+                    return NotFound();
+                }
+                var response = _mapper.Map<AuthorDTO>(author);
+                _logger.LogInfo("Successed author");
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return InternalError($"{e.Message} and {e.InnerException.Message}");
+            }
+        }
+
+        private ObjectResult InternalError (string message)
+        {
+            _logger.LogError(message);
+            return StatusCode(500, "Something wnet wrong");
         }
     }
 }

@@ -15,6 +15,12 @@
             </summary>
             <returns>List of authors</returns>
         </member>
+        <member name="M:BookStore_API.Controllers.AuthorsController.GetAuthor(System.Int32)">
+            <summary>
+            Get one authors by specyfic ID
+            </summary>
+            <returns>one of authors</returns>
+        </member>
         <member name="T:BookStore_API.Controllers.HomeController">
             <summary>
             Test Controller
