@@ -2,6 +2,7 @@
 using BookStore_API.Contracts;
 using BookStore_API.Data;
 using BookStore_API.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -34,6 +35,7 @@ namespace BookStore_API.Controllers
         /// </summary>
         /// <returns>List of authors</returns>
         [HttpGet]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -60,6 +62,10 @@ namespace BookStore_API.Controllers
         /// </summary>
         /// <returns>one of authors</returns>
         [HttpGet("{id}")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetAuthor(int id)
         {
             try
@@ -87,13 +93,14 @@ namespace BookStore_API.Controllers
         /// </summary>
         /// <param name="authorDTO"></param>
         /// <returns></returns>
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPost]
         public async Task<IActionResult> Create([FromBody] AuthorCreateDTO authorDTO)
         {
-
             try
             {
                 if (authorDTO == null || !ModelState.IsValid)
@@ -124,16 +131,19 @@ namespace BookStore_API.Controllers
         /// <param name="id"></param>
         /// <param name="authorDTO"></param>
         /// <returns></returns>
+
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Administrator, Customer")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPut("{id}")]
+      
         public async Task<IActionResult> Update(int id, [FromBody] AuthorUpdateDTO authorDTO)
         {
             var location = GetControllerActionNames();
             try
             {
-                _logger.LogInfo("Update started");
+                _logger.LogInfo($"{location}: Update started");
                 if (id < 1 || authorDTO == null && id != authorDTO.Id)
                 {
                     _logger.LogInfo($"{location}: There is no id > 0 or object empty");
@@ -167,10 +177,12 @@ namespace BookStore_API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrator")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpDelete("{id}")]
+        
         public async Task<IActionResult> Delete(int id)
         {
             try
