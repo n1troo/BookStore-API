@@ -130,12 +130,13 @@ namespace BookStore_API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] AuthorUpdateDTO authorDTO)
         {
+            var location = GetControllerActionNames();
             try
             {
                 _logger.LogInfo("Update started");
                 if (id < 1 || authorDTO == null && id != authorDTO.Id)
                 {
-                    _logger.LogInfo("There is no id > 0 or object empty");
+                    _logger.LogInfo($"{location}: There is no id > 0 or object empty");
                     return BadRequest();
                 }
                 if (!ModelState.IsValid)
@@ -191,7 +192,6 @@ namespace BookStore_API.Controllers
 
                 var issuccess = await _authorRepository.Delete(author);
 
-
                 return Ok();
             }
             catch (Exception e)
@@ -200,6 +200,13 @@ namespace BookStore_API.Controllers
             }
         }
 
+        private string GetControllerActionNames()
+        {
+            var controller = ControllerContext.ActionDescriptor.ControllerName;
+            var action = ControllerContext.ActionDescriptor.ActionName;
+
+            return $"{controller} - {action}";
+        }
 
         private ObjectResult InternalError(string message)
         {

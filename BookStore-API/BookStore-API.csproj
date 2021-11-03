@@ -12,6 +12,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\Migrations\20211029095401_DodanieISBNa.cs" />
+    <Compile Remove="Data\Migrations\20211029095401_DodanieISBNa.Designer.cs" />
+    <Compile Remove="Data\Migrations\20211029095914_XYZ.cs" />
+    <Compile Remove="Data\Migrations\20211029095914_XYZ.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.19" />

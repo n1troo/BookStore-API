@@ -52,14 +52,38 @@
             <summary>
             This get all books
             </summary>
-            <returns></returns>
+            <returns>List odf books</returns>
         </member>
         <member name="M:BookStore_API.Controllers.BooksController.GetBook(System.Int32)">
             <summary>
             Get book by ID
             </summary>
             <param name="id"></param>
+            <returns>One book</returns>
+        </member>
+        <member name="M:BookStore_API.Controllers.BooksController.Create(BookStore_API.DTOs.BookCreateDTO)">
+            <summary>
+            Create new book
+            </summary>
+            <param name="bookDTO"></param>
+            <returns>book objecet</returns>
+            
+        </member>
+        <member name="M:BookStore_API.Controllers.BooksController.Update(System.Int32,BookStore_API.DTOs.BookUpdateDTO)">
+            <summary>
+            Update book
+            </summary>
+            <param name="id"></param>
+            <param name="bookUpdate"></param>
             <returns></returns>
+        </member>
+        <member name="M:BookStore_API.Controllers.BooksController.Delete(System.Int32)">
+            <summary>
+            This delete user by specyfic id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+            
         </member>
         <member name="T:BookStore_API.Controllers.HomeController">
             <summary>
