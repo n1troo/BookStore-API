@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -16,6 +17,7 @@ using System.Threading.Tasks;
 
 namespace BookStore_API.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -34,6 +36,7 @@ namespace BookStore_API.Controllers
             _logger= loggerService;
         }
 
+
         /// <summary>
         /// User login endpoint
         /// </summary>
@@ -41,15 +44,16 @@ namespace BookStore_API.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
+        [Route("login")]
         public async Task<IActionResult> Login([FromBody] UserDTO userDTO)
         {
             var location = GetControllerActionNames();
-           
 
             var username = userDTO.UserName;
             var password = userDTO.Password;
 
-            _logger.LogInfo($"{location}: Aattempted : {username} , {password}");
+            _logger.LogInfo($"{location}: Aattempted: {username} , {password}");
+            
             try
             {
                 var result = await _signInManager.PasswordSignInAsync(username, password, false, false);
@@ -58,11 +62,51 @@ namespace BookStore_API.Controllers
                 {
                     var user = await _userManager.FindByNameAsync(username);
                     var tokenString = await GenerateJSONWebToken(user);
+                    
                     return Ok(new { token = tokenString });
                 }
 
                 _logger.LogError($"{location}: Aattempted faild : {username} , {password}");
                 return Unauthorized(userDTO);
+            }
+            catch (Exception e)
+            {
+                return InternalError($"{e.Message} and {e.InnerException.Message}");
+            }
+        }
+        /// <summary>
+        /// User registation endpoint
+        /// </summary>
+        /// <param name="userDTO"></param>
+        /// <returns></returns>
+        [Route("register")]
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> Register([FromBody] UserDTO userDTO)
+        {
+            var location = GetControllerActionNames();
+            try
+            {
+                var username = userDTO.UserName;
+                var password = userDTO.Password;
+                var user = new IdentityUser { UserName = username, Email = username };
+
+                var result = await _userManager.CreateAsync(user, password);
+
+                if(!result.Succeeded)
+                {
+                    string resultErrors = null;
+                    foreach (var item in result.Errors)
+                    {
+                        resultErrors += $"{Environment.NewLine}{item.Code} - {item.Description}";
+                    }
+                    
+                    return InternalError($"{location}: Created accout faild : ({username} , {password}) Description = {resultErrors}");
+                }
+
+                _logger.LogInfo($"{location}: Created accout success : ({username} , {password})");
+                return Ok(new { result.Succeeded });
+
             }
             catch (Exception e)
             {

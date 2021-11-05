@@ -104,5 +104,12 @@
             <param name="userDTO"></param>
             <returns></returns>
         </member>
+        <member name="M:BookStore_API.Controllers.UsersController.Register(BookStore_API.DTOs.UserDTO)">
+            <summary>
+            User registation endpoint
+            </summary>
+            <param name="userDTO"></param>
+            <returns></returns>
+        </member>
     </members>
 </doc>

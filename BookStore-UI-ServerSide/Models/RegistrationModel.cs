@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace BookStore_API.DTOs
+namespace BookStore_UI_ServerSide.Models
 {
-    public class UserDTO
+    public class RegistrationModel
     {
         [Required]
-        [Display(Name = "Nazwa uzytkownika jako e-mail")]
         public string UserName { get; set; }
 
         [Required]
