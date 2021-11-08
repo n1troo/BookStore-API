@@ -1,4 +1,5 @@
-﻿using BookStore_UI_ServerSide.Contracts;
+﻿using Blazored.LocalStorage;
+using BookStore_UI_ServerSide.Contracts;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,11 +14,13 @@ namespace BookStore_UI_ServerSide.Service
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
         private readonly IHttpClientFactory _httpClient;
-
-        public BaseRepository(IHttpClientFactory httpClient)
+        private readonly ILocalStorageService _localStorageService;
+        public BaseRepository(IHttpClientFactory httpClient, 
+            ILocalStorageService localStorageService)
         {
             _httpClient = httpClient;
-        }
+            _localStorageService = localStorageService;
+    }
         public async Task<bool> Create(string url, T obj)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, url);
@@ -99,6 +102,11 @@ namespace BookStore_UI_ServerSide.Service
             }
 
             return false;
+        }
+
+        private async Task<string> GetBearereToken()
+        {
+            return await _localStorageService.GetItemAsync<string>("authToken");
         }
     }
 }
