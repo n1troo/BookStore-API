@@ -51,7 +51,10 @@ namespace BookStore_UI_ServerSide.Service
             await _localStorageService.SetItemAsync("authToken", token.Token);
 
             //change auth state of app
-           
+
+            await ((ApiAuthenticationStateProvider)_authenticationStateProvider).LoggedIn();
+
+
 
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", token.Token);
 

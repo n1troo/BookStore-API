@@ -14,6 +14,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Blazored.LocalStorage;
 using System.IdentityModel.Tokens.Jwt;
+using BookStore_UI_ServerSide.Providers;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace BookStore_UI_ServerSide
 {
@@ -30,12 +32,16 @@ namespace BookStore_UI_ServerSide
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<JwtSecurityTokenHandler>();
+            
             services.AddBlazoredLocalStorage();
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddHttpClient();
+            
+            services.AddScoped<ApiAuthenticationStateProvider>();
+            services.AddScoped<AuthenticationStateProvider>(p => p.GetRequiredService<ApiAuthenticationStateProvider>());
+            services.AddScoped<JwtSecurityTokenHandler>();
             services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
            
         }

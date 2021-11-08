@@ -1,0 +1,47 @@
+﻿@page "/login"
+@using BookStore_UI_ServerSide.Contracts
+@using BookStore_UI_ServerSide.Models
+
+@inject IAuthenticationRepository _authRepo
+@inject NavigationManager _navMan
+
+<div class="card" style="width: 24rem">
+<h5 class="card-title text-capitalize text-sm-center">Login now!</h5>
+@if (!response)
+    {
+        <div class="alert-danger" style="text-align:center" padding="10px 0px 0px 0px">
+            <p>Something go wrong</p>
+        </div>
+    }
+    <div class="card-body">
+        <EditForm Model="ModelReg" OnValidSubmit="HandleLogin">
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+        <div class="form-group">
+            <label for="username">User name</label>
+            <InputText id="username" class="form-control" @bind-Value="ModelReg.UserName">enter username</InputText>
+            <ValidationMessage For="@(()=> ModelReg.UserName)"/>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <InputText id="password" class="form-control" @bind-Value="ModelReg.Password">enter password</InputText>
+            <ValidationMessage For="(()=> ModelReg.Password)"/>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Login</button>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private LoginModel ModelReg = new LoginModel();
+    private bool response = true;
+
+    private async Task HandleLogin()
+    {
+        response = await _authRepo.Login(ModelReg);
+        if (response)
+        {
+            _navMan.NavigateTo("/");
+        }
+    }
+}

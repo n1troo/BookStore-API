@@ -9,7 +9,7 @@ namespace BookStore_UI_ServerSide.Models
     public class LoginModel
     {
         [Required]
-        [Display(Name = "Nazwa uzytkownika jako e-mail")]
+        [Display(Name = "Nazwa uzytkownika")]
         public string UserName { get; set; }
 
         [Required]
