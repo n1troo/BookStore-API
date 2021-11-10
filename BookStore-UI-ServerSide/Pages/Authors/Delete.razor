@@ -1,0 +1,23 @@
+﻿@page "/authors/delete/{Id}"
+
+@inject IAuthorRepository _repo
+@inject NavigationManager _navMan
+<h3>Delete</h3>
+
+@if(Model == null)
+{
+    <LoadingPrompt Message=""/>
+}
+else
+{
+    
+}
+
+@code {
+    [Parameter]
+    public String Id { get; set; }
+
+    private Author Model = new Author();
+
+
+}

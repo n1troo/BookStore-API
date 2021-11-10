@@ -1,6 +1,10 @@
 ﻿using Blazored.LocalStorage;
 using BookStore_UI_ServerSide.Contracts;
+using BookStore_UI_ServerSide.Models;
+using BookStore_UI_ServerSide.Providers;
+using Microsoft.AspNetCore.Components.Authorization;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +19,12 @@ namespace BookStore_UI_ServerSide.Service
     {
         private readonly IHttpClientFactory _httpClient;
         private readonly ILocalStorageService _localStorageService;
-        public BaseRepository(IHttpClientFactory httpClient, 
-            ILocalStorageService localStorageService)
+
+        public BaseRepository(IHttpClientFactory httpClient, ILocalStorageService localStorageService)
         {
             _httpClient = httpClient;
             _localStorageService = localStorageService;
-    }
+        }
         public async Task<bool> Create(string url, T obj)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, url);
@@ -29,9 +33,14 @@ namespace BookStore_UI_ServerSide.Service
             request.Content = new StringContent(JsonConvert.SerializeObject(obj));
 
             var client = _httpClient.CreateClient();
+            //dolaczenie tokena autoryazacji do kazdego zapytania
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", await GetBearereToken());
+            
             HttpResponseMessage response = await client.SendAsync(request);
-
-            if (response.StatusCode == System.Net.HttpStatusCode.Created) { return true; }
+            if (response.StatusCode == System.Net.HttpStatusCode.Created) 
+            {
+                return true; 
+            }
 
             return false;
         }
@@ -44,6 +53,8 @@ namespace BookStore_UI_ServerSide.Service
             request.Content = JsonContent.Create(new { id });
 
             var client = _httpClient.CreateClient();
+            //dolaczenie tokena autoryazacji do kazdego zapytania
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", await GetBearereToken());
             var response = await client.SendAsync(request);
 
             if (response.StatusCode == System.Net.HttpStatusCode.NoContent) { return true; }
@@ -58,12 +69,16 @@ namespace BookStore_UI_ServerSide.Service
             var request = new HttpRequestMessage(HttpMethod.Get, url + id);
 
             var client = _httpClient.CreateClient();
+            //dolaczenie tokena autoryazacji do kazdego zapytania
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", await GetBearereToken());
             var response = await client.SendAsync(request);
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<T>(content);
+
+                var back = JsonConvert.DeserializeObject<T>(content);
+                return back;
             }
 
             return null;
@@ -75,33 +90,56 @@ namespace BookStore_UI_ServerSide.Service
             var request = new HttpRequestMessage(HttpMethod.Get, url);
 
             var client = _httpClient.CreateClient();
+            //dolaczenie tokena autoryazacji do kazdego zapytania
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", await GetBearereToken());
             var response = await client.SendAsync(request);
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<IList<T>>(content);
+                var back = JsonConvert.DeserializeObject<IList<T>>(content);
+                return back;
             }
 
             return null;
         }
 
-        public async Task<bool> Update(string url, T obj)
+        public async Task<bool> Update(string url, T obj, int Id)
         {
-            var request = new HttpRequestMessage(HttpMethod.Put, url);
-            request.Content = new StringContent(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json");
 
-            //request.Content = JsonContent.Create(new { obj });
-
-            var client = _httpClient.CreateClient();
-            var response = await client.SendAsync(request);
-
-            if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+            if (obj == null)
+                return false;
+            try
             {
-                return true;
-            }
+                //ignorujemy serializacje innych dalszych powiazan
+                var objcontent = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                });
 
-            return false;
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, url + Id)
+                {
+                    //request.Content = JsonContent.Create(new { user });
+                    Content = new StringContent(objcontent, Encoding.UTF8, "application/json")
+                };
+
+                var client = _httpClient.CreateClient();
+                //dolaczenie tokena autoryazacji do kazdego zapytania
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", await GetBearereToken());
+                var response = await client.SendAsync(request);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception e)
+            {
+
+                return false;
+            }
         }
 
         private async Task<string> GetBearereToken()

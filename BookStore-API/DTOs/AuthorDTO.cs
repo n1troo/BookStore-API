@@ -25,7 +25,7 @@ namespace BookStore_API.DTOs
     }
     public class AuthorUpdateDTO
     {
-        [Required]
+       
         public int Id { get; set; }
         [Required]
         public string FirstName { get; set; }

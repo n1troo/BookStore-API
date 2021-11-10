@@ -53,12 +53,7 @@ namespace BookStore_UI_ServerSide.Service
             //change auth state of app
 
             await ((ApiAuthenticationStateProvider)_authenticationStateProvider).LoggedIn();
-
-
-
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", token.Token);
-
-
             return true;
         }
 

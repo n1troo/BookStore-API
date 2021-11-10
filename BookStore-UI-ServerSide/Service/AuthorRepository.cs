@@ -1,6 +1,7 @@
 ﻿using Blazored.LocalStorage;
 using BookStore_UI_ServerSide.Contracts;
 using BookStore_UI_ServerSide.Models;
+using Microsoft.AspNetCore.Components.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,8 @@ namespace BookStore_UI_ServerSide.Service
         private readonly IHttpClientFactory _Client;
         private readonly ILocalStorageService _localStorageService;
 
-        public AuthorRepository(IHttpClientFactory client, ILocalStorageService localStorageService) :base(client, localStorageService)
+        public AuthorRepository(IHttpClientFactory client, ILocalStorageService localStorageService, 
+            AuthenticationStateProvider authenticationStateProvider) :base(client, localStorageService)
         { 
             _localStorageService = localStorageService;
             _Client = client;

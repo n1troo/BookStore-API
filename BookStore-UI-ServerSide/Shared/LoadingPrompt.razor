@@ -1,0 +1,26 @@
+﻿
+
+<head>
+    <link href="~/css/mycustom/pinner.css" rel="stylesheet" />
+</head>
+
+@if (@Message.Length == 0)
+{
+    <div class="lds-ellipsis"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+
+   @* <div class="spinner-border" role="status">
+    <span class="sr-only">@Message</span>
+    </div>*@
+}
+else
+{
+    <div class="alert-danger" style="text-align:center" border-padding="10px 0px 0px 0px">
+        <p>Something go wrong</p>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public String Message { get; set;}
+}
+

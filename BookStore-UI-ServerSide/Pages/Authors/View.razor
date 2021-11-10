@@ -1,0 +1,86 @@
+﻿@page "/authors/view/{Id}"
+
+@inject IAuthorRepository _repo
+@inject NavigationManager _navMan
+
+<h3>View</h3>
+
+@if (Model == null)
+{
+    <LoadingPrompt Message=""/>
+}
+else
+{
+    <div class="col-md-4">
+        <h4>Author Details</h4>
+        <table class="table table-responsive">
+            <tr>
+                <td>Numer</td>
+                <td>@Model.Id</td>
+            </tr>
+            <tr>
+                <td>First Name</td>
+                <td>@Model.FirstName</td>
+            </tr>
+            <tr>
+                <td>Last Name</td>
+                <td>@Model.LastName</td>
+            </tr>
+            <tr>
+                <td>Bio</td>
+                <td>@Model.Bio</td>
+            </tr>
+        </table>
+   
+        <br/>
+
+        @if(Model.Books == null)
+        {
+            <div class="alert alert-danger align-self-sm-end">
+                <p>Loadding...</p>
+            </div>
+        }
+        else
+        {
+             <div class="list-group">
+                @foreach( var book in Model.Books)
+                {
+                        <a href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+                            <img src="https://github.com/twbs.png" alt="twbs" width="32" height="32" class="rounded-circle flex-shrink-0">
+                            <div class="d-flex gap-2 w-100 justify-content-between">
+                                <div>
+                                    <h6 class="mb-0">@book.Title - @book.Year</h6>
+                                    <p class="mb-0 opacity-75">@book.Summary</p>
+                                </div>
+                                <small class="opacity-50 text-nowrap">@book.Price</small>
+                            </div>
+                        </a>
+                }
+            </div>
+        }
+     <div>
+         <button type="button" class="btn btn-danger" @onclick="BakcToList">Back</button>
+     </div>
+     </div>
+}
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private Author Model = new Author();
+
+    private void BakcToList()
+    {
+        _navMan.NavigateTo("/authors/");
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        int id = Convert.ToInt32(Id);
+        Model = await _repo.Get(Endpoints.AuthorsEndpoint, id);
+    }
+}
+
+
+    

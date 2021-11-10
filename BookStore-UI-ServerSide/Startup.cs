@@ -16,6 +16,9 @@ using Blazored.LocalStorage;
 using System.IdentityModel.Tokens.Jwt;
 using BookStore_UI_ServerSide.Providers;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace BookStore_UI_ServerSide
 {
@@ -44,7 +47,6 @@ namespace BookStore_UI_ServerSide
             services.AddScoped<JwtSecurityTokenHandler>();
             services.AddTransient<IAuthenticationRepository, AuthenticationRepository>();
             services.AddTransient<IAuthorRepository, AuthorRepository>();
-           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

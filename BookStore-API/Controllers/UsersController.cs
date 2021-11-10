@@ -36,7 +36,6 @@ namespace BookStore_API.Controllers
             _logger= loggerService;
         }
 
-
         /// <summary>
         /// User login endpoint
         /// </summary>
@@ -140,9 +139,6 @@ namespace BookStore_API.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
-
-
         private string GetControllerActionNames()
         {
             var controller = ControllerContext.ActionDescriptor.ControllerName;
