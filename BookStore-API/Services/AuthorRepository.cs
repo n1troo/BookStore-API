@@ -38,8 +38,7 @@ namespace BookStore_API.Services
 
         public async Task<IList<Author>> FindeAll()
         {
-            var authors =
-                await _db.Authors.Include(p => p.Books).ToArrayAsync();
+            var authors = await _db.Authors.Include(p => p.Books).ToListAsync();
             
             return authors;
         }

@@ -1,0 +1,59 @@
+﻿@page "/authors/create"
+@inject IAuthorRepository _repo
+@inject NavigationManager _navMan
+
+
+<h3 class="card-title">Create new author</h3>
+
+@if (isFaild)
+{
+    <LoadingPrompt Message=""/>
+}
+
+    <EditForm Model="Model" OnValidSubmit="CreateAuthor" >
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-gropu bg-white">
+        <label for="firstname">First Name</label>
+        <InputText @bind-Value="Model.FirstName" class="form-control" id="firstname"></InputText> 
+    </div>
+    <div class="form-group bg-white">
+        <label for="lastname">Last Name</label>
+        <InputText @bind-Value="Model.LastName" class="form-control" id="lastname"></InputText>
+    </div>
+    <div class="form-group bg-white">
+        <label for="bio">O autorze</label>
+        <InputTextArea @bind-Value="Model.Bio" class="form-control" id="bio"></InputTextArea>
+    </div>
+
+    <div>
+        <button class="w-20 btn btn-py-sm-2 btn-primary" type="submit">SAVE</button>
+    </div>
+</EditForm>
+
+
+<div>
+    <button class="w-20 btn btn-py-sm-2 btn-primary" @onclick="GoBack" type="submit">
+        <span class="oi oi-media-step-backward"/> Go back
+    </button>
+</div>
+
+
+@code {
+    private bool isFaild  = false;
+    private Author Model = new Author();
+
+    private async Task CreateAuthor()
+    {
+        var isSuccesed = await _repo.Create(Endpoints.AuthorsEndpoint, Model);
+        if (isSuccesed)
+        {
+            GoBack();
+        }
+        else isFaild = true;
+    }
+    private void GoBack()
+    {
+        _navMan.NavigateTo("/authors");
+    }
+}

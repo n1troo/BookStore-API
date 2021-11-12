@@ -16,8 +16,6 @@ namespace BookStore_API.Services
         {
             this._db = db;
         }
-
-
         public async Task<bool> Create(Book entity)
         {
             await _db.Books.AddAsync(entity);

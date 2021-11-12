@@ -27,10 +27,26 @@ namespace BookStore_UI_ServerSide.Service
         }
         public async Task<bool> Create(string url, T obj)
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, url);
             if (obj == null) { return false; }
 
-            request.Content = new StringContent(JsonConvert.SerializeObject(obj));
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, Static.Endpoints.AuthorsEndpoint)
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json")
+            };
+
+
+            ////ignorujemy serializacje innych dalszych powiazan
+            //var objcontent = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings()
+            //{
+            //    ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            //});
+
+            //HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, url)
+            //{
+            //    //request.Content = JsonContent.Create(new { user });
+            //    Content = new StringContent(objcontent, Encoding.UTF8, "application/json")
+            //};
 
             var client = _httpClient.CreateClient();
             //dolaczenie tokena autoryazacji do kazdego zapytania
@@ -49,15 +65,14 @@ namespace BookStore_UI_ServerSide.Service
         {
             if (id < 1) { return false; }
 
-            var request = new HttpRequestMessage(HttpMethod.Delete, url);
-            request.Content = JsonContent.Create(new { id });
+            var request = new HttpRequestMessage(HttpMethod.Delete, url + id);
 
             var client = _httpClient.CreateClient();
             //dolaczenie tokena autoryazacji do kazdego zapytania
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", await GetBearereToken());
             var response = await client.SendAsync(request);
 
-            if (response.StatusCode == System.Net.HttpStatusCode.NoContent) { return true; }
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) { return true; }
 
             return false;
 
@@ -135,9 +150,8 @@ namespace BookStore_UI_ServerSide.Service
 
                 return false;
             }
-            catch (Exception e)
-            {
-
+            catch (Exception)
+            { 
                 return false;
             }
         }

@@ -1,6 +1,5 @@
 ﻿@page "/login"
 
-
 @inject IAuthenticationRepository _authRepo
 @inject NavigationManager _navMan
 
@@ -12,7 +11,7 @@
             <p>Something go wrong</p>
         </div>
     }
-    <div class="card-body">
+    <div>
         <EditForm Model="ModelReg" OnValidSubmit="HandleLogin">
         <DataAnnotationsValidator/>
         <ValidationSummary/>
@@ -40,7 +39,7 @@
         response = await _authRepo.Login(ModelReg);
         if (response)
         {
-            _navMan.NavigateTo("/");
+            _navMan.NavigateTo("/authors");
         }
     }
 }

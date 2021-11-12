@@ -11,7 +11,7 @@
 }
 else
 {
-    <div class="col-md-4">
+    <div class="col-md-4 bg-white">
         <h4>Author Details</h4>
         <table class="table table-responsive">
             <tr>
@@ -35,10 +35,8 @@ else
         <br/>
 
         @if(Model.Books == null)
-        {
-            <div class="alert alert-danger align-self-sm-end">
-                <p>Loadding...</p>
-            </div>
+        { 
+            <LoadingPrompt Message=""/>
         }
         else
         {
