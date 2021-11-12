@@ -5,8 +5,7 @@ using System.Threading.Tasks;
 
 namespace BookStore_UI_ServerSide.Contracts
 {
-    public interface IBaseRepository<T> 
-        where T : class
+    public interface IBaseRepository<T> where T : class
     {
         Task<T> Get(string url, int id);
         Task<IList<T>> Get(string url);

@@ -1,7 +1,10 @@
 ﻿using Blazored.LocalStorage;
+
 using BookStore_UI_ServerSide.Contracts;
 using BookStore_UI_ServerSide.Models;
+
 using Microsoft.AspNetCore.Components.Authorization;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,15 +13,16 @@ using System.Threading.Tasks;
 
 namespace BookStore_UI_ServerSide.Service
 {
-    public class AuthorRepository : BaseRepository<Author>, IAuthorRepository
+    public class BookRepository : BaseRepository<Book>, IBookRepository
     {
-        private readonly IHttpClientFactory _Client;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILocalStorageService _localStorageService;
 
-        public AuthorRepository(IHttpClientFactory client, ILocalStorageService localStorageService) : base(client, localStorageService)
-        { 
+        public BookRepository(IHttpClientFactory httpClientFactory, ILocalStorageService localStorageService)
+            : base (httpClientFactory, localStorageService)
+        {
+            _httpClientFactory = httpClientFactory;
             _localStorageService = localStorageService;
-            _Client = client;
         }
     }
 }

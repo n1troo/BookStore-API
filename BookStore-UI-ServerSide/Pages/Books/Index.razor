@@ -1,0 +1,56 @@
+﻿@page "/books/"
+
+@inject IBookRepository _repo
+@inject NavigationManager _nawMan
+
+<h3>Index</h3>
+
+@if(Model == null)
+{
+    <LoadingPrompt Message=""/>
+
+}
+else
+{
+     <table class="table embed-responsive bg-white">
+            <thead>
+                <tr>
+                    <th>AuthorId</th>
+                    <th>Title</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+        @foreach (var book in Model)
+        {
+                    <tr>
+                        <td>@book.AuthorId</td>
+                        <td>@book.Title</td>
+                        <td>
+                            <a href="/authors/view/@book.Id" class="btn btn-primary">
+                                <span class="oi oi-book"></span>
+                            </a>
+                            <AuthorizeView Roles="Administrator">
+                            <a href="/authors/edit/@book.Id" class="btn btn-warning">
+                                <span class="oi oi-pencil"></span>
+                            </a>
+                            <a href="/authors/delete/@book.Id" class="btn btn-danger">
+                                <span class="oi oi-x"></span>
+                            </a>
+                            </AuthorizeView>
+                        </td>
+                    </tr>
+        }
+            </tbody>
+        </table>
+}
+
+@code {
+
+    private IList<Book> Model;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Model = await _repo.Get(Endpoints.BooksEndpoint);
+    }
+}
