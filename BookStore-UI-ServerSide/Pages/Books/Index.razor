@@ -3,7 +3,22 @@
 @inject IBookRepository _repo
 @inject NavigationManager _nawMan
 
+ 
+<style>
+    td {
+        text-align: justify-all;
+        vertical-align: middle;
+        margin: auto;
+        font-family: Dotum;
+        padding: 10px;
+    }
+</style>
+
 <h3>Index</h3>
+
+<a href="/books/create/" class="btn btn-primary ">Create new book
+<span class="oi oi-oi-bookmark"></span>    
+</a>
 
 @if(Model == null)
 {
@@ -15,6 +30,7 @@ else
      <table class="table embed-responsive bg-white">
             <thead>
                 <tr>
+                    <th>Image</th>
                     <th>AuthorId</th>
                     <th>Title</th>
                     <th>Actions</th>
@@ -24,17 +40,18 @@ else
         @foreach (var book in Model)
         {
                     <tr>
-                        <td>@book.AuthorId</td>
+                        <td><img src="uploads/@book.Image" alt="Sample Photo" width="100" height="100"/></td>
+                        <td><a href="/authors/view/@book.AuthorId" style="text-align:center;display:block;">@book.Author.FirstName @book.Author.LastName</a></td>
                         <td>@book.Title</td>
                         <td>
-                            <a href="/authors/view/@book.Id" class="btn btn-primary">
+                            <a href="/books/view/@book.Id" class="btn btn-primary">
                                 <span class="oi oi-book"></span>
                             </a>
                             <AuthorizeView Roles="Administrator">
-                            <a href="/authors/edit/@book.Id" class="btn btn-warning">
+                            <a href="/books/edit/@book.Id" class="btn btn-warning">
                                 <span class="oi oi-pencil"></span>
                             </a>
-                            <a href="/authors/delete/@book.Id" class="btn btn-danger">
+                            <a href="/books/delete/@book.Id" class="btn btn-danger">
                                 <span class="oi oi-x"></span>
                             </a>
                             </AuthorizeView>
@@ -42,7 +59,7 @@ else
                     </tr>
         }
             </tbody>
-        </table>
+        </table> 
 }
 
 @code {
@@ -53,4 +70,5 @@ else
     {
         Model = await _repo.Get(Endpoints.BooksEndpoint);
     }
+    
 }

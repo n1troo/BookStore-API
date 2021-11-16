@@ -30,7 +30,7 @@ namespace BookStore_UI_ServerSide.Service
             if (obj == null) { return false; }
 
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, Static.Endpoints.AuthorsEndpoint)
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url)
             {
                 Content = new StringContent(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json")
             };
@@ -78,6 +78,12 @@ namespace BookStore_UI_ServerSide.Service
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Endpoint url"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<T> Get(string url, int id)
         {
 
@@ -130,7 +136,7 @@ namespace BookStore_UI_ServerSide.Service
                 var objcontent = JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings()
                 {
                     ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-                });
+                }) ;
 
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, url + Id)
                 {
@@ -150,7 +156,7 @@ namespace BookStore_UI_ServerSide.Service
 
                 return false;
             }
-            catch (Exception)
+            catch (Exception e)
             { 
                 return false;
             }

@@ -1,0 +1,100 @@
+﻿@page "/books/delete/{Id}"
+
+@inject IBookRepository _bookRepo
+@inject NavigationManager _navManager
+@inject IFileUpload _fileUpload
+
+<h3>Delete book</h3>
+
+@if (Model == null)
+{
+    <LoadingPrompt Message=""/>
+}
+else
+{
+  <div class="col-md-4 bg-white">
+        <h4>Author Details</h4>
+        <table class="table table-responsive">
+             <tr>
+                <td>IMG</td>
+                <td><img src="uploads/@Model.Image" alt="Sample Photo" width="100" height="100"/></td>
+            </tr>
+            <tr>
+                <td>Numer</td>
+                <td>@Model.Id</td>
+            </tr>
+            <tr>
+                <td>Title</td>
+                <td>@Model.Title</td>
+            </tr>
+            <tr>
+                <td>Last Name</td>
+                <td>@Model.Isbn</td>
+            </tr>
+            <tr>
+                <td>Price</td>
+                <td>@Model.Price</td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Author</strong>
+                </td>
+                <td>
+                    @if (Model.Author == null)
+                    {
+                        <span class="text-muted">No Author Recorded</span>
+                    }
+                    else
+                    {
+                        <a href="/authors/view/@Model.AuthorId">@Model.Author.FirstName @Model.Author.LastName</a>
+                    }
+                </td>
+            </tr>
+        </table>
+
+         <button @onclick="DeleteBook" class="btn btn-outline-danger">
+            <span class="oi oi-pencil"></span>
+            DELETE BOOK
+        </button>
+       
+        <button @onclick="BackToList" class="btn btn-outline-secondary">
+            <span class="oi oi-media-skip-backward"></span>
+            Back To List
+        </button>
+
+   </div>
+}
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; }
+    private Book Model;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Model = await _bookRepo.Get(Endpoints.BooksEndpoint, Convert.ToInt32(Id));
+    }
+
+    private void BackToList()
+    {
+        _navManager.NavigateTo("/books/");
+    }
+
+    private async Task  DeleteBook()
+    {
+
+        var isSucceded = await _bookRepo.Delete(Endpoints.BooksEndpoint, Convert.ToInt32(Id));
+        if (isSucceded)
+        {
+            _fileUpload.RemoveFile(@Model.Image);
+            BackToList();
+        }
+    }
+
+    private void GoToDelete()
+    {
+        _navManager.NavigateTo($"/books/delete/{Model.Id}");
+    }
+
+}
