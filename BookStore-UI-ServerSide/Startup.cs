@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using BookStore_UI.Service;
+using Blazored.Toast;
 
 namespace BookStore_UI_ServerSide
 {
@@ -35,7 +36,7 @@ namespace BookStore_UI_ServerSide
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            
+            services.AddBlazoredToast();
             services.AddBlazoredLocalStorage();
             services.AddRazorPages();
             services.AddServerSideBlazor();

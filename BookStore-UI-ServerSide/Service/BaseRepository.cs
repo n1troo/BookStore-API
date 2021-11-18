@@ -156,7 +156,7 @@ namespace BookStore_UI_ServerSide.Service
 
                 return false;
             }
-            catch (Exception e)
+            catch (Exception)
             { 
                 return false;
             }
